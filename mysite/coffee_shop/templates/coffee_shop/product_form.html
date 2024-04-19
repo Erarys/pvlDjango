@@ -1,0 +1,18 @@
+{% extends 'coffee_shop/base.html' %}
+
+
+{% block title %}
+    Coffee
+{% endblock %}
+
+{% block body %}
+    <h1><a href="{% url 'coffee_shop:products' %}">Shop</a></h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Сохранить</button>
+        <a href="{% url 'coffee_shop:delete' pk=object.pk %}">Удалить</a>
+    </form>
+    <h1></h1>
+
+{% endblock %}

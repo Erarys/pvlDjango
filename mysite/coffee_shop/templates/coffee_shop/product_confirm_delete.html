@@ -1,0 +1,13 @@
+{% extends 'coffee_shop/base.html' %}
+
+{% block title %}
+	Удалить {{ object }}
+{% endblock %}
+
+{% block body %}
+    <form method="post">
+    {% csrf_token %}
+    <h1>Удалить продукт</h1>
+    <button>Удалить</button>
+    </form>
+{% endblock %}

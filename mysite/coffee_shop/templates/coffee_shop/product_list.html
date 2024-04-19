@@ -1,0 +1,16 @@
+{% extends 'coffee_shop/base.html' %}
+
+
+{% block title %}
+	Coffee
+{% endblock %}
+
+{% block body %}
+    <h1><a href="{% url 'coffee_shop:shop' %}">Shop</a></h1>
+    {% for product in products %}
+    	<p>Тип кофе: <a href="{% url 'coffee_shop:product_details' pk=product.pk %}">{{ product.name }}</a></p>
+    	<p>Цена: {{ product.price }}</p>
+    {% endfor %}
+    <h2><a href="{% url 'coffee_shop:product_create' %}">Добавить</a></h2>
+
+{% endblock %}
