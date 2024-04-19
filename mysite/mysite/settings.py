@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'coffee_shop.apps.CoffeeShopConfig',
     'myauth.apps.MyauthConfig',
     'api.apps.ApiConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
