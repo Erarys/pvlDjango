@@ -1,0 +1,31 @@
+{% extends 'myauth/base.html' %}
+
+{% block title %}
+    Профиль
+{% endblock %}
+
+{% block body %}
+    <header>
+        <a href="{% url 'coffee_shop:shop' %}"><h1>Shop</h1></a>
+        <h2>Профиль</h2>
+        {% if user.is_authenticated %}
+            <p>Пользователь: {{ user.username }}</p>
+            <p>Имя: {{ user.first_name }}</p>
+            <p>Фамилия: {{ user.last_name }}</p>
+            <p>Почта: {{ user.email }}</p>
+
+            <a href="{% url 'myauth:logout' %}">
+                <button type="button" class="btn btn-secondary btn-lg">Выйти из аккаунта</button>
+            </a>
+            <a href="{% url 'myauth:update_profile' %}">
+                <button type="button" class="btn btn-primary btn-lg">Обновить данные</button>
+            </a>
+
+        {% else %}
+            <h2>Пользователь не авторизован</h2>
+            <a href="{% url 'myauth:login' %}">
+                <button type="button" class="btn btn-secondary btn-lg">Войти в аккаунт</button>
+            </a>
+        {% endif %}
+    </header>
+{% endblock %}

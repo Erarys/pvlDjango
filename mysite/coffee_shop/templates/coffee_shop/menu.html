@@ -1,0 +1,15 @@
+{% extends 'coffee_shop/base.html' %}
+
+{% block title %}
+    Menu
+{% endblock %}
+
+{% block body %}
+    <header>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save</button>
+        </form>
+    </header>
+{% endblock %}

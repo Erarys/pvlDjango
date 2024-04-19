@@ -1,0 +1,46 @@
+{% extends 'coffee_shop/base.html' %}
+
+{% block title %}
+    Топ мүшелері туралы
+{% endblock %}
+
+{% block css_additional %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'coffee_shop/css/partners.css' %}">
+{% endblock %}
+
+{% block body %}
+
+    <div class="header">
+        <h1>Специальность: Компьютерные науки</h1>
+
+    </div>
+
+    <div class="container">
+        <h2>Abibulla Bekbol</h2>
+        <p>
+            <li>Аты-жөні: Әбибулла Бекбол</li>
+            <li> Курс: 3</li>
+            <li>Туған жері: Шардара ауданы</li>
+            <li>Туған күні: 05.05.04</li>
+            <li>Мамандығы: Computer Science</li>
+        <p>
+
+    </div>
+
+    <div class="container">
+        <h2>Neskenova Amina</h2>
+        <p>
+            <li>Аты-жөні: Нескенова Амина</li>
+            <li>Курс: 3</li>
+            <li>Туған жері: Павлодар облысы</li>
+            <li>Туған күні: 25.01.04</li>
+            <li>Мамандығы: Computer Science</li>
+        </p>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Специальность: Компьютерные науки</p>
+    </div>
+
+{% endblock %}

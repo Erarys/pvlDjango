@@ -1,0 +1,484 @@
+{% extends 'coffee_shop/base.html' %}
+
+{% block title %}
+    Coffee Shop
+{% endblock %}
+
+{% block css_additional %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'coffee_shop/css/shop.css' %}">
+{% endblock %}
+
+{% block body %}
+
+    <header id="header-section">
+        <div class="container container-header">
+            <div class="header">
+                <nav class="nav-main">
+                    <ul class="nav-main__list">
+                        <li herf="" class="nav-main__item">
+                            <a class="nav-main_link nav-main_link_selected" href="{% url 'coffee_shop:home' %}"><h2>
+                                Home</h2></a>
+                        </li>
+                        <li class="nav-main__item">
+                            <a class="nav-main__link" href="{% url 'myauth:about' %}"><h2>About</h2></a>
+                        </li>
+                        <li class="nav-main__item">
+                            <a class="nav-main__link" href="{% url 'coffee_shop:menu' %}"><h2>Menu</h2></a>
+                        </li>
+
+                    </ul>
+                    <img class="header__logo" src="{% static  'coffee_shop/img/icn.jpg' %}" alt="#">
+                    <ul class="nav-main__list">
+                        <li class="nav-main__item">
+                            <a class="nav-main__link" href="#"><h2>Orders</h2></a>
+                        </li>
+                        <li class="nav-main__item">
+                            <a class="nav-main__link" href="{% url 'coffee_shop:project' %}"><h2>Project</h2></a>
+                        </li>
+                        <li class="nav-main__item">
+                            <a class="nav-main__link" href="{% url 'coffee_shop:partners' %}"><h2>Partners</h2></a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </header>
+    <main>
+        <section id="banner-section">
+            <div class="container">
+                <div class="banner">
+                    <div class="banner-info">
+                        <h2 class="banner__header">Enjoy Your Morning Coffee.</h2>
+                        <p class="banner__text">Уникальное место, где встречаются великолепный вкус и уютная
+                            атмосфера.</p>
+                        <button class="banner__btn btn-primary">Test Coffee</button>
+                    </div>
+                    <div id="clock"></div>
+
+                </div>
+                {% if user.is_authenticated %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit">Заказать</button>
+
+                    </form>
+                    {% if orders %}
+                        {% for order in orders %}
+                            <div class="order-status">
+                                <h3>Статус вашего заказа: {{ order.status }}</h3>
+                                {% if order.status %}
+                                    <p id="status">Принято</p>
+                                {% else %}
+                                    <p id="status">Ожидается подтверждение</p>
+                                {% endif %}
+                                <button id="update-status"><a href="{% url 'coffee_shop:shop' %}">Обновить статус</a></button>
+
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+
+                    {#                    <form id="order-form">#}
+                    {#                        {% csrf_token %}#}
+                    {#                        <label for="name">Имя:</label>#}
+                    {#                        <input type="text" id="name" name="name" value="{{ user.first_name }}" required><br>#}
+                    {#                        <label for="email">Email:</label>#}
+                    {#                        <input type="email" id="email" name="email" value="{{ user.email }}" required><br>#}
+                    {#                        <label for="coffee">Выберите кофе:</label>#}
+                    {#                        <select id="coffee" name="coffee" required>#}
+                    {#                            {% for good in goods %}#}
+                    {#                                <option value="americano" data-price="1200">{{ good.name }} - {{ good.price }}</option>#}
+                    {#                            {% endfor %}#}
+                    {#                            <!-- Добавьте другие виды кофе по вашему выбору -->#}
+                    {#                        </select><br>#}
+                    {##}
+                    {#                        <label for="count">Количество:</label>#}
+                    {#                        <input type="number" id="count" name="count" min="1" value="1" required><br>#}
+                    {#                        <label for="total">Итого:</label>#}
+                    {#                        <span id="total">0</span><br>#}
+                    {##}
+                    {#                        <button type="submit">Заказать</button>#}
+                    {#                    </form>#}
+                {% else %}
+                    <h1>Чтобы заказать авторизуйтесь</h1>
+                {% endif %}
+
+                <div id="filters">
+                    <h3>Фильтры:</h3>
+                    <label for="category">Категория:</label>
+                    <select id="category">
+                        <option value="all">Все</option>
+                        <option value="breakfast">Завтраки</option>
+                        <option value="lunch">Обеды</option>
+                        <option value="dinner">Ужины</option>
+                    </select>
+                </div>
+
+                <div id="menu">
+                    <h3>Меню:</h3>
+                    <div class="dish" data-category="breakfast">Омлет</div>
+                    <div class="dish" data-category="breakfast">Тосты с авокадо</div>
+                    <div class="dish" data-category="lunch">Салат Цезарь</div>
+                    <div class="dish" data-category="lunch">Паста Болоньезе</div>
+                    <div class="dish" data-category="dinner">Стейк с картошкой</div>
+                    <div class="dish" data-category="dinner">Рыба на гриле</div>
+                </div>
+
+                <div class="rating">
+                    <h3>Оценка:</h3>
+                    <div class="stars">
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="2">&#9733;</span>
+                        <span class="star" data-value="3">&#9733;</span>
+                        <span class="star" data-value="4">&#9733;</span>
+                        <span class="star" data-value="5">&#9733;</span>
+                    </div>
+                    <p>Ваша оценка: <span id="rating-value">0</span></p>
+                </div>
+
+                <div class="review">
+                    <h3>Отзыв:</h3>
+                    <textarea id="review-text" rows="4"></textarea>
+                    <button id="submit-review">Отправить отзыв</button>
+                </div>
+
+                <center><h1>About</h1></center>
+
+            </div>
+        </section>
+        <div class="container">
+            <ol class="features section-main">
+                <li class="features__item">
+                    <span class="features__item_dark">01</span>Лучший вкус кофе
+                    <img class="features__img" src="{% static  'coffee_shop/img/1.jpg' %}" alt="#">
+                </li>
+                <li class="features__item">
+                    <span class="features__item_dark">02</span>Место для отдыха
+                    <img class="features__img" src="{% static  'coffee_shop/img/2.jpg' %}" alt="#">
+                </li>
+                <li class="features__item">
+                    <span class="features__item_dark">03</span>Правильная жарка зерен
+                    <img class="features__img" src="{% static  'coffee_shop/img/16.jpg' %}" alt="#">
+                </li>
+            </ol>
+        </div>
+        <section id="history-section" class="section-main">
+            <div class="container">
+                <div class="history-wrap">
+                    <img class="history-wrap__img" src="{% static  'coffee_shop/img/4.jpg' %}" alt="#">
+                    <img class="history-wrap__img" src="{% static  'coffee_shop/img/5.jpg' %}" alt="#">
+                    <img class="history-wrap__img" src={% static  'coffee_shop/img/6.jpg' %} alt="#">
+                    <div class="history">
+                        <h2 class="history__title section-title">О нас</h2>
+                        <h3 class="history__subtitle section-subtitle">У нас есть все, <br>
+                            чтобы сделать ваш опыт посещения кафе незабываемым</h3>
+                        <p class="history_text section_text">
+                            <li>Уютная атмосфера.</li>
+                            <li>Высокое качество.</li>
+                            <li>Уникальные рецепты.</li>
+                            <li>Разнообразие выбора.</li>
+                            <li>Приемлемые цены.</li>
+                            <li>Регулярные акции и специальные предложения.</li>
+                            <li>Превосходное обслуживание.</li>
+                            <li>Удовольствие клиента - наш главный приоритет.</li>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="popular-section" class="section-main">
+            <div class="container">
+                <h2 class="section-title">Popular Product</h2>
+                <h3 class="section-subtitle">Coffee popular Product</h3>
+                <div class="popular-wrap">
+                    <div class="popular">
+                        <img class="popular__img" src="{% static  'coffee_shop/img/14.jpg' %}" alt="#">
+                        <div class="rating">
+                            <h4 class="rating__title">COFFEE</h4>
+                            <ul class="rating__list">
+                                <li class="rating__item material-icons-outlined">star</li>
+                                <li class="rating__item material-icons-outlined">star</li>
+                                <li class="rating__item material-icons-outlined">star</li>
+                                <li class="rating__item material-icons-outlined">star</li>
+                                <li class="rating__item material-icons-outlined">star_border</li>
+                            </ul>
+                        </div>
+                        <h3 class="popular__title">brazil coffee gred</h3>
+                        <b class="popular_price">Price - <strong class="popular_price_dark">5200</strong> тенге</b>
+                        <button class="popular__btn btn-primary"><span class="material-icons-outlined">local_mall</span>Добавить
+                            в корзину
+                        </button>
+                    </div>
+                    <div class="popular">
+                        <img class="popular__img" src="{% static  'coffee_shop/img/14.jpg' %}" alt="#">
+                        <div class="rating">
+                            <h4 class="rating__title">COFFEE</h4>
+                            <ul class="rating__list">
+                                <li class="rating__item material-icons-outlined">star</li>
+                                <li class="rating__item material-icons-outlined">star</li>
+                                <li class="rating__item material-icons-outlined">star</li>
+                                <li class="rating__item material-icons-outlined">star</li>
+                                <li class="rating__item material-icons-outlined">star_border</li>
+                            </ul>
+                        </div>
+                        <h3 class="popular__title">brazil coffee gred</h3>
+                        <b class="popular_price">Price - <strong class="popular_price_dark">5200</strong> тенге</b>
+                        <button class="popular__btn btn-primary"><span class="material-icons-outlined">local_mall</span>Добавить
+                            в корзину
+                        </button>
+                    </div>
+                    <div class="popular">
+                        <img class="popular__img" src="{% static  'coffee_shop/img/14.jpg' %}" alt="#">
+                        <div class="rating">
+                            <h4 class="rating__title">COFFEE</h4>
+                            <ul class="rating__list">
+                                <li class="rating__item material-icons-outlined">star</li>
+                                <li class="rating__item material-icons-outlined">star</li>
+                                <li class="rating__item material-icons-outlined">star</li>
+                                <li class="rating__item material-icons-outlined">star</li>
+                                <li class="rating__item material-icons-outlined">star_border</li>
+                            </ul>
+                        </div>
+                        <h3 class="popular__title">brazil coffee gred</h3>
+                        <b class="popular_price">Price - <strong class="popular_price_dark">5200</strong> тенге</b>
+                        <button class="popular__btn btn-primary"><span class="material-icons-outlined">local_mall</span>Добавить
+                            в корзину
+                        </button>
+                    </div>
+                </div>
+                <a class="popular__link btn-primary" href="#">Посмотреть весь продукт</a>
+            </div>
+        </section>
+        <section id="discover-section" class="section-main">
+            <div class="container">
+                <div class="discover-wrap">
+                    <img class="discover-img" src="{% static  'coffee_shop/img/3.jpg' %}" alt="#">
+                    <div class="discover">
+                        <h3 class="discover__title section-subtitle">Кофе<br> машина, купить для дома</h3>
+                        <p class="section__text">Простое приготовление станет удовольствием благодаря
+                            высокотехнологичному оборудованию. Мы используем новейшие технологии для улучшения процесса
+                            приготовления, что придает нашему кофе богатый вкус и уникальный аромат.
+                        </p>
+                        <a class="discover__link btn-primary" href="#">Узнайте сейчас</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="menu-section" class="section-main">
+            <div class="container">
+                <h2 class="section-title">Меню</h2>
+                <h3 class="section-subtitle">Популярное меню кофе</h3>
+                <ul class="menu-wrap">
+                    <li class="menu">
+                        <img class="menu__img" src="{% static  'coffee_shop/img/11.jpg' %}" alt="#">
+                        <h3 class="menu__title">Американо</h3>
+                        <b class="menu__price">1200</b>
+                    </li>
+                    <li class="menu">
+                        <img class="menu__img" src="{% static  'coffee_shop/img/12.jpg' %}" alt="#">
+                        <h3 class="menu__title">Эспрессо</h3>
+                        <b class="menu__price">1300</b>
+                    </li>
+                    <li class="menu">
+                        <img class="menu__img" src="{% static  'coffee_shop/img/13.jpg' %}" alt="#">
+                        <h3 class="menu__title">Эспрессо двойной</h3>
+                        <b class="menu__price">1300</b>
+                    </li>
+                    <li class="menu">
+                        <img class="menu__img" src="{% static  'coffee_shop/img/14.jpg' %}" alt="#">
+                        <h3 class="menu__title">Капучино</h3>
+                        <b class="menu__price">1400</b>
+                    </li>
+                    <li class="menu">
+                        <img class="menu__img" src="{% static  'coffee_shop/img/15.jpg' %}" alt="#">
+                        <h3 class="menu__title">Латте</h3>
+                        <b class="menu__price">1200</b>
+                    </li>
+                    <li class="menu">
+                        <img class="menu__img" src="{% static  'coffee_shop/img/16.jpg' %}" alt="#">
+                        <h3 class="menu__title">Кофе со льдом</h3>
+                        <b class="menu__price">1300</b>
+                    </li>
+                    <li class="menu">
+                        <img class="menu__img" src="{% static  'coffee_shop/img/17.jpg' %}" alt="#">
+                        <h3 class="menu__title">Горячий шоколад</h3>
+                        <b class="menu__price">1100</b>
+                    </li>
+                    <li class="menu">
+                        <img class="menu__img" src="{% static  'coffee_shop/img/18.jpg' %}" alt="#">
+                        <h3 class="menu__title">Раф</h3>
+                        <b class="menu__price">1500</b>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <section id="testimonial-section" class="section-main">
+            <div class="container">
+                <h2 class="section-title">Отзывы</h2>
+                <h3 class="section-subtitle">Что говорят наши клиенты?</h3>
+                <div class="testimonial-wrap">
+                    <div class="testimonial">
+                        <div class="testimonial-data">
+                            <img class="testimonial__img" src="{% static  'coffee_shop/img/19.jpg' %}" alt="#">
+                            <p class="testimonial_text section_text">Персонал кофейни всегда радует
+                                улыбкой и приветливым отношением. В этом кафе всегда приятная и
+                                уютная обстановка. Готов возвращаться сюда снова и снова! Здесь
+                                каждый сможет найти что-то по вкусу.</p>
+                        </div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-person">
+                                <span class="testimonial__name">Максат</span>
+                                <span class="testimonial__position">Понравилось: еда, сервис</span>
+                            </div>
+                            <ul class="testimonial_list rating_list">
+                                <span class="star" data-value="1">&#9733;</span>
+                                <span class="star" data-value="2">&#9733;</span>
+                                <span class="star" data-value="3">&#9733;</span>
+                                <span class="star" data-value="4">&#9733;</span>
+                                <span class="star" data-value="5">&#9733;</span>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="testimonial">
+                        <div class="testimonial-data">
+                            <img class="testimonial__img" src="{% static  'coffee_shop/img/20.jpg' %}" alt="#">
+                            <p class="testimonial_text section_text">Здравствуйте, кафе просто 💣, уютное очень, интерьер
+                                🔥 вежливый и приветливый персонал, меню отпад, всем советую.</p>
+                        </div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-person">
+                                <span class="testimonial__name">Айнур</span>
+                                <span class="testimonial__position">Понравилось: еда, сервис, интерьер, атмосфера</span>
+                            </div>
+                            <ul class="testimonial_list rating_list">
+                                <span class="star" data-value="1">&#9733;</span>
+                                <span class="star" data-value="2">&#9733;</span>
+                                <span class="star" data-value="3">&#9733;</span>
+                                <span class="star" data-value="4">&#9733;</span>
+                                <span class="star" data-value="5">&#9733;</span>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-action">
+                    <div class="testimonial-count">
+                        <b class="testimonial-count__text">2/6 человек</b>
+                        <progress class="testimonial-count__progress" value="40" max="100"></progress>
+                    </div>
+                    <div class="testimonial-btn-wrap">
+                        <button class="testimonial-btn material-icons-outlined">west</button>
+                        <button class="testimonial-btn material-icons-outlined testimonial-btn_active">east</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="section-reservation" class="section-main">
+            <div class="container">
+                <div class="reservation-wrap">
+                    <div class="reservation-map"></div>
+                    <form class="reservation">
+                        <h2 class="reservation__title section-title">Бронирование</h2>
+                        <h3 class="reservation__subtitle section-subtitle">Бронирование столика</h3>
+                        <input class="reservation__input" type="text" value="4 человека">
+                        <input class="reservation__input" type="text" value="03.25, 2024">
+                        <input class="reservation__input" type="text" value="11:00 AM">
+                        <button class="reservation__btn btn-primary">ЗАБРОНИРОВАТЬ СТОЛ</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <section id="section-news" class="section-main">
+            <div class="container">
+                <h3 class="section-subtitle">Наши последние новости</h3>
+                <div class="news-wrap">
+                    <div class="news">
+                        <img class="news__img" src="{% static  'coffee_shop/img/15.jpg' %}" alt="#">
+                        <div class="news-description">
+                            <div class="news-info">
+                                <span class="news_author"><span class="news_author_dark">
+                                <time class="news__date" datetime="2024-03-12">12.03.2024</time>
+                                </span></span>
+                            </div>
+                            <p class="news__text">Мы используем новейшие технологии, что придает нашему кофе богатый
+                                вкус и уникальный аромат...</p>
+                            <a class="news__link" href="#">Читать еще <span class="material-icons-outlined">arrow_forward</span></a>
+                        </div>
+                    </div>
+                    <div class="news">
+                        <img class="news__img" src="{% static  'coffee_shop/img/2.jpg' %}" alt="#">
+                        <div class="news-description">
+                            <div class="news-info">
+                                <span class="news_author"><span class="news_author_dark">
+                                <time class="news__date" datetime="2021-01-21">15.03.2024</time>
+                                </span></span>
+                            </div>
+                            <p class="news__text">В нашей кофейне мы создали атмосферу, где время течет медленно, а
+                                разговоры становятся бесценными...</p>
+                            <a class="news__link" href="#">Читать еще<span
+                                    class="material-icons-outlined">arrow_forward</span></a>
+                        </div>
+                    </div>
+                    <div class="news">
+                        <img class="news__img" src="{% static  'coffee_shop/img/11.jpg' %}" alt="#">
+                        <div class="news-description">
+                            <div class="news-info">
+                                <span class="news_author"><span class="news_author_dark">
+                                <time class="news__date" datetime="2021-01-21">16.03.2024</time>
+                                </span></span>
+                            </div>
+                            <p class="news__text">Здесь вас ждет аромат свежесваренного кофе, уютная атмосфера и моменты
+                                настоящего удовольствия...</p>
+                            <a class="news__link" href="#">Читать еще <span class="material-icons-outlined">arrow_forward</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer id="footer-section">
+            <div class="container">
+                <div class="footer">
+                    <img class="footer__img" src="{% static  'coffee_shop/img/icn.jpg' %}" alt="#">
+                    <ul class="footer__list">
+                        <li class="footer__item">
+                            <a class="footer__link" href="#">Home</a>
+                        </li>
+                        <li class="footer__item">
+                            <a class="footer__link" href="#">Rerervation</a>
+                        </li>
+                        <li class="footer__item">
+                            <a class="footer__link" href="#">Menu</a>
+                        </li>
+                        <li class="footer__item">
+                            <a class="footer__link" href="#">About</a>
+                        </li>
+                        <li class="footer__item">
+                            <a class="footer__link" href="#">Pages</a>
+                        </li>
+                        <li class="footer__item">
+                            <a class="footer__link" href="#">Shop</a>
+                        </li>
+                        <li class="footer__item">
+                            <a class="footer__link" href="#">Blogs</a>
+                        </li>
+                    </ul>
+                    <form class="footer-form">
+                        <input class="footer__input" type="email" placeholder="Введите адрес электронной почты">
+                        <button class="footer-form__btn material-icons-outlined">east</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                <div class="container">
+                    <p class="footer-copyright__text">Neskenova Amina</p>
+                </div>
+
+                <script src="{% static 'coffee_shop/js/shop.js' %}"></script>
+
+
+            </div>
+        </footer>
+    </main>
+{% endblock %}

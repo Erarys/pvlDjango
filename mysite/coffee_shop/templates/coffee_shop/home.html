@@ -1,0 +1,29 @@
+{% extends 'coffee_shop/base.html' %}
+
+
+{% block title %}
+    Coffee Shop
+{% endblock %}
+
+{% block css_additional %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'coffee_shop/css/home.css' %}">
+{% endblock %}
+
+{% block body %}
+    <section id="banner-section">
+        <div class="container">
+            <div class="banner">
+                <div class="banner-info">
+                    <h2 class="banner__header">Enjoy Your Morning Coffee.</h2>
+                    <p class="banner__text">Уникальное место, где встречаются великолепный вкус и уютная атмосфера.</p>
+                    <button class="banner__btn btn-primary"><a href="{% url 'coffee_shop:shop' %}">Test Coffee</a></button>
+                </div>
+                <div id="clock"></div>
+            </div>
+            <form id="order-form">
+                <script src="{% static 'coffee_shop/js/home.js' %}"></script>
+            </form>
+        </div>
+    </section>
+{% endblock %}
